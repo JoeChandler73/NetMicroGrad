@@ -1,0 +1,38 @@
+namespace MicroGrad;
+
+public class Network : Module
+{
+    private readonly List<Layer> _layers;
+    
+    public Network(int numberOfInputs, params int[] numberOfOutputs) 
+        : this(numberOfInputs, numberOfOutputs.AsEnumerable())
+    {
+    }
+    
+    public Network(int numberOfInputs, IEnumerable<int> numberOfOutputs)
+    {
+        var numOutputs = numberOfOutputs.ToList();
+        
+        var sizes = new List<int>();
+        sizes.Add(numberOfInputs);
+        sizes.AddRange(numOutputs);
+        
+        _layers = Enumerable.Range(0, numOutputs.Count)
+            .Select(i => new Layer(sizes[i], sizes[i + 1]))
+            .ToList();
+    }
+
+    public IEnumerable<Value> GetOutputs(IEnumerable<Value> inputs)
+    {
+        var layers = _layers.ToList();
+        var @out = layers[0].GetOutputs(inputs);
+        
+        foreach (var layer in layers.Skip(1))
+            @out = layer.GetOutputs(@out);
+
+        return @out;
+    }
+    
+    public IEnumerable<Value> GetOutputs(params Value[] inputs) => GetOutputs(inputs.AsEnumerable());
+    public override IEnumerable<Value> Parameters => _layers.SelectMany(layer => layer.Parameters);
+}
