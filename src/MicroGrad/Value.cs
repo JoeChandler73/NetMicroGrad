@@ -95,6 +95,11 @@ public class Value
         return @out;
     }
 
+    public void Update(double learningRate)
+    {
+        Data += -learningRate * Grad;
+    }
+    
     public void Back()
     {
         var topo = new List<Value>();
@@ -105,11 +110,6 @@ public class Value
         Grad = 1;
         foreach (var value in topo)
             value.Backward();
-    }
-
-    public void Update(double learningRate)
-    {
-        Data -= learningRate *  Grad;
     }
 
     private void BuildTopo(List<Value> topo, HashSet<Value> visited, Value value)

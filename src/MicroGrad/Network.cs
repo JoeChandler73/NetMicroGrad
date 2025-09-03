@@ -24,15 +24,13 @@ public class Network : Module
 
     public IEnumerable<Value> GetOutputs(IEnumerable<Value> inputs)
     {
-        var layers = _layers.ToList();
-        var @out = layers[0].GetOutputs(inputs);
-        
-        foreach (var layer in layers.Skip(1))
-            @out = layer.GetOutputs(@out);
+        foreach (var layer in _layers)
+            inputs = layer.GetOutputs(inputs);
 
-        return @out;
+        return inputs;
     }
     
     public IEnumerable<Value> GetOutputs(params Value[] inputs) => GetOutputs(inputs.AsEnumerable());
+    
     public override IEnumerable<Value> Parameters => _layers.SelectMany(layer => layer.Parameters);
 }

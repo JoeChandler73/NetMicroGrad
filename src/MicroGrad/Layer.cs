@@ -14,8 +14,7 @@ public class Layer : Module
     public IEnumerable<Value> GetOutputs(IEnumerable<Value> inputs)
     {
         return _neurons
-            .Select(neuron => neuron.GetOutput(inputs))
-            .ToList();
+            .Select(neuron => neuron.GetOutput(inputs));
     }
     
     public IEnumerable<Value> GetOutputs(params Value[] inputs) => GetOutputs(inputs.AsEnumerable());
