@@ -1,5 +1,6 @@
 ﻿using MicroGrad;
 
+var learningRate = 0.05;
 var network = new Network(3, 4, 4, 1);
 
 var inputs = new[]
@@ -12,7 +13,7 @@ var inputs = new[]
 
 var required = new List<Value>{ 1.0, -1.0, -1.0, 1.0 };
 
-for (var index = 0; index < 1000; index++)
+for (var index = 0; index < 20; index++)
 {
     // forward pass
     var predictions = inputs.Select(input => network.GetOutputs(input).First());
@@ -26,7 +27,7 @@ for (var index = 0; index < 1000; index++)
     loss.Back();
     
     foreach (var parameter in network.Parameters)
-        parameter.Update(0.01);
+        parameter.Update(learningRate);
     
     Console.WriteLine($"{index}: {loss}");
 }
