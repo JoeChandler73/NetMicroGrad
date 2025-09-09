@@ -4,6 +4,9 @@ public static class Extensions
 {
     public static Value Sum(this IEnumerable<Value> source)
     {
-        return source.Aggregate((acc, next) => acc + next);
+        if (source == null) 
+            throw new ArgumentNullException(nameof(source));
+        
+        return source.Aggregate(new Value(0), (acc, next) => acc + next);
     }
 }

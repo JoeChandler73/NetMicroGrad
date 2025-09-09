@@ -8,5 +8,11 @@ public abstract class Module
             parameter.Grad = 0;
     }
     
+    public void UpdateParameters(double learningRate)
+    {
+        foreach (var parameter in Parameters)
+            parameter.UpdateData(learningRate);
+    }
+    
     public abstract IEnumerable<Value> Parameters { get; }
 }

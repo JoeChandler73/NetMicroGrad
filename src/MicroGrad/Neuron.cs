@@ -8,7 +8,9 @@ public class Neuron : Module
 
     private readonly Value _bias;
     
-    public Neuron(int numberOfInputs)
+    private readonly Func<Value, Value> _activation;
+    
+    public Neuron(int numberOfInputs, Func<Value, Value>? activation = null)
     {
         var uniform = new ContinuousUniform(-1, 1);
 
@@ -17,18 +19,24 @@ public class Neuron : Module
             .ToList();
         
         _bias = new Value(uniform.Sample());
+        
+        _activation = activation ?? (x => x.Tanh());
     }
 
     public Value GetOutput(IEnumerable<Value> inputs)
     {
-        var @out = _weights.Zip(inputs)
+        var inputList = inputs.ToList();
+        if (inputList.Count != _weights.Count)
+            throw new ArgumentException($"Expected {_weights.Count} inputs, got {inputList.Count}");
+        
+        var @out = _weights.Zip(inputList)
             .Select(item => item.First * item.Second)
             .Sum() + _bias;
 
-        return @out.Tanh();
+        return _activation(@out);
     }
 
-    public Value GetOutput(params Value[] inputs) => GetOutput(inputs.AsEnumerable());
+    public Value GetOutput(params Value[] inputs) => GetOutput((IEnumerable<Value>)inputs);
 
     public override IEnumerable<Value> Parameters => _weights.Append(_bias);
 }

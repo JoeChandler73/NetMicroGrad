@@ -13,7 +13,8 @@ var inputs = new[]
 
 var required = new List<Value>{ 1.0, -1.0, -1.0, 1.0 };
 
-for (var index = 0; index < 20; index++)
+var numberOfIterations = 50;
+for (var index = 0; index < numberOfIterations; index++)
 {
     // forward pass
     var predictions = inputs.Select(input => network.GetOutputs(input).First());
@@ -25,9 +26,19 @@ for (var index = 0; index < 20; index++)
     // backward pass
     network.ZeroGrad();
     loss.Back();
-    
-    foreach (var parameter in network.Parameters)
-        parameter.Update(learningRate);
-    
-    Console.WriteLine($"{index}: {loss}");
+    network.UpdateParameters(learningRate);
+
+    if (index % 10 == 0 || index == numberOfIterations - 1)
+    {
+        Console.WriteLine($"Epoch {index}: Loss = {loss.Data:F6}");
+        if (index == numberOfIterations - 1)
+        {
+            Console.WriteLine("\nFinal Predictions vs Targets:");
+            for (int i = 0; i < predictions.Count(); i++)
+            {
+                var pred = predictions.ElementAt(i);
+                Console.WriteLine($"Input {i}: Predicted = {pred.Data:F4}, Target = {required[i].Data:F4}");
+            }
+        }
+    }
 }

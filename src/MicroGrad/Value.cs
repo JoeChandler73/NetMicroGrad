@@ -95,7 +95,7 @@ public class Value
         return @out;
     }
 
-    public void Update(double learningRate)
+    public void UpdateData(double learningRate)
     {
         Data += -learningRate * Grad;
     }
@@ -107,15 +107,21 @@ public class Value
         BuildTopo(topo, visited, this);
         topo.Reverse();
 
-        Grad = 1;
+        // Zero out all gradients first
+        foreach (var value in topo)
+            value.Grad = 0;
+        
+        Grad = 1; // set root gradient
         foreach (var value in topo)
             value.Backward();
     }
 
     private void BuildTopo(List<Value> topo, HashSet<Value> visited, Value value)
     {
-        if(!visited.Contains(value))
-            visited.Add(value);
+        if(visited.Contains(value))
+            return; // Early return!
+        
+        visited.Add(value);
         
         foreach (var child in value.Children) 
             BuildTopo(topo, visited, child);
