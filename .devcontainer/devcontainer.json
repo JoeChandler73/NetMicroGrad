@@ -11,7 +11,8 @@
 				"ms-dotnettools.csharp",
 				"ms-dotnettools.csdevkit",
 				"dbaeumer.vscode-eslint",
-				"GitHub.copilot"
+				"GitHub.copilot",
+				"GitHub.vscode-pull-request-github"
 			]
 		}
 	},
